@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermarket Billing System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: rgb(231, 166, 176);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: rgb(231, 166, 176);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(231, 166, 176);
+        }
+
+        #bill-details {
+            margin-top: 20px;
+        }
+
+        footer {
+            background-color: rgb(231, 166, 176);
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #bill-items {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #bill-items li {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Supermarket Billing System</h1>
+    </header>
+    
+    <main>
+        <section id="product-management">
+            <h2>Product Management</h2>
+            <form id="product-form">
+                <input type="text" id="product-name" placeholder="Product Name" required>
+                <input type="number" id="product-price" placeholder="Price (₹)" required>
+                <button type="submit">Add Product</button>
+            </form>
+            <div id="product-list">
+            </div>
+        </section>
+
+        <section id="billing">
+            <h2>Billing</h2>
+            <form id="billing-form">
+                <input type="text" id="customer-name" placeholder="Customer Name" required>
+                <input type="text" id="customer-phone" placeholder="Phone Number" required>
+                <input type="text" id="scan-barcode" placeholder="Product Name" required>
+                <button type="button" onclick="addProductToBill()">Add to Bill</button>
+            </form>
+            <div id="bill-details">
+                <h3>Bill Details</h3>
+                <p>Customer Name: <span id="customer-name-display"></span></p>
+                <p>Phone Number: <span id="customer-phone-display"></span></p>
+                <ul id="bill-items">
+                </ul>
+                <p>Total: ₹<span id="total-amount">0.00</span></p>
+                <button onclick="generateBill()">Generate Bill</button>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Supermarket Billing System</p>
+    </footer>
+
+    <script>
+        let products = [];
+        let bill = [];
+        let totalAmount = 0;
+        let customerName = '';
+        let customerPhone = '';
+
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            if (name && !isNaN(price)) {
+                products.push({ name, price });
+                displayProducts();
+                this.reset();
+            }
+        });
+
+        function displayProducts() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '<h3>Product List</h3><ul>' +
+                products.map((p) => `<li>${p.name} - ₹${p.price.toFixed(2)}</li>`).join('') +
+                '</ul>';
+        }
+
+        function addProductToBill() {
+            const productName = document.getElementById('scan-barcode').value;
+            const product = products.find(p => p.name === productName);
+            if (product) {
+                bill.push(product);
+                totalAmount += product.price;
+                updateBill();
+                document.getElementById('scan-barcode').value = '';
+            } else {
+                alert('Product not found!');
+            }
+        }
+
+        function updateBill() {
+            const billItems = document.getElementById('bill-items');
+            billItems.innerHTML = bill.map(p => `<li>${p.name} - ₹${p.price.toFixed(2)}</li>`).join('');
+            document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+        }
+
+        function generateBill() {
+            customerName = document.getElementById('customer-name').value;
+            customerPhone = document.getElementById('customer-phone').value;
+
+            if (!customerName || !customerPhone) {
+                alert('Please enter customer details.');
+                return;
+            }
+
+            if (bill.length > 0) {
+                alert(`Bill generated!\n\nCustomer Name: ${customerName}\nPhone Number: ${customerPhone}\n\n${bill.map(p => `${p.name} - ₹${p.price.toFixed(2)}`).join('\n')}\n\nTotal amount: ₹${totalAmount.toFixed(2)}`);
+                document.getElementById('customer-name-display').textContent = customerName;
+                document.getElementById('customer-phone-display').textContent = customerPhone;
+                bill = [];
+                totalAmount = 0;
+                updateBill();
+                document.getElementById('customer-name').value = '';
+                document.getElementById('customer-phone').value = '';
+            } else {
+                alert('No items in the bill!');
+            }
+        }
+    </script>
+</body>
+</html>

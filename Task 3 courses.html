@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning Platform - Courses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            margin-top: 0;
+        }
+
+        .course-list, .payment-section {
+            margin-top: 20px;
+        }
+
+        .course-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .payment-section {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .payment-slip {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>E-Learning Platform</h1>
+    </header>
+    
+    <main>
+        <section id="available-courses">
+            <h2>Available Courses</h2>
+            <div class="course-list">
+                <div class="course-item">
+                    <h3>Introduction to Programming</h3>
+                    <p>Learn the basics of programming.</p>
+                    <p>Price: ₹2000</p>
+                    <button onclick="selectCourse('Introduction to Programming', 2000)">Select</button>
+                </div>
+                <div class="course-item">
+                    <h3>Advanced JavaScript</h3>
+                    <p>Deep dive into JavaScript.</p>
+                    <p>Price: ₹3000</p>
+                    <button onclick="selectCourse('Advanced JavaScript', 3000)">Select</button>
+                </div>
+                <div class="course-item">
+                    <h3>Web Development Basics</h3>
+                    <p>Build your first web application.</p>
+                    <p>Price: ₹2500</p>
+                    <button onclick="selectCourse('Web Development Basics', 2500)">Select</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="payment-section" class="payment-section">
+            <h2>Payment</h2>
+            <div id="selected-course">
+                <p>No course selected.</p>
+            </div>
+            <form id="payment-form" style="display: none;">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="text" id="card-number" placeholder="Card Number" required>
+                <input type="text" id="expiry-date" placeholder="Expiry Date" required>
+                <input type="text" id="cvv" placeholder="CVV" required>
+                <button type="button" onclick="processPayment()">Pay</button>
+            </form>
+        </section>
+
+        <section id="payment-slip" class="payment-slip">
+            <h2>Payment Slip</h2>
+            <p id="payment-summary">No payment made yet.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 E-Learning Platform</p>
+    </footer>
+
+    <script>
+        let selectedCourse = null;
+
+        function selectCourse(courseName, price) {
+            selectedCourse = { courseName, price };
+            
+            document.getElementById('selected-course').innerHTML = `
+                <p>Selected Course: ${courseName}</p>
+                <p>Price: ₹${price}</p>
+            `;
+            
+            document.getElementById('payment-form').style.display = 'block';
+        }
+
+        function processPayment() {
+            if (selectedCourse) {
+                const name = document.getElementById('name').value;
+                const cardNumber = document.getElementById('card-number').value;
+                const expiryDate = document.getElementById('expiry-date').value;
+                const cvv = document.getElementById('cvv').value;
+                
+                document.getElementById('payment-summary').innerHTML = `
+                    <p>Name: ${name}</p>
+                    <p>Course: ${selectedCourse.courseName}</p>
+                    <p>Amount: ₹${selectedCourse.price}</p>
+                    <p>Status: Payment Successful</p>
+                `;
+            } else {
+                alert('No course selected!');
+            }
+        }
+    </script>
+</body>
+</html>
